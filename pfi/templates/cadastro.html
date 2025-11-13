@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - CareConnect</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Ícones Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+{% include 'menu.html' %}
+
+  <!-- Formulário de Cadastro -->
+  <section class="container my-5" style="max-width: 600px;">
+    <h2 class="fw-bold text-center mb-4">Crie sua conta</h2>
+
+    <form class="p-4 shadow rounded bg-white"
+          action="{% url 'cadastro'%}"
+          method="POST"
+          enctype="multipart/form-data">
+
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="nome" class="form-label">Nome completo</label>
+        <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Digite seu e-mail" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="telefone" class="form-label">Telefone</label>
+        <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(xx) xxxxx-xxxx" required>
+      </div>
+
+      <!-- ADICIONADO -->
+      <div class="mb-3">
+        <label for="data_nasc" class="form-label">Data de nascimento</label>
+        <input type="date" class="form-control" id="data_nasc" name="data_nasc" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="senha" class="form-label">Senha</label>
+        <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite sua senha" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="tipo" class="form-label">Quero me cadastrar como:</label>
+        <select id="tipo" name="tipo" class="form-select" required>
+          <option value="">Selecione</option>
+          <option value="cuidador">Cuidador</option>
+          <option value="familia">Família</option>
+        </select>
+      </div>
+
+
+      <!-- Campos específicos para CUIDADOR -->
+<div id="camposCuidador" class="d-none">
+    <div class="mb-3">
+      <label for="especialidade" class="form-label">Especialidade</label>
+      <input type="text" class="form-control" id="especialidade" name="especialidade" placeholder="Ex: Cuidados com idosos acamados">
+    </div>
+
+    <div class="mb-3">
+      <label for="horarios" class="form-label">Horários disponíveis</label>
+      <input type="text" class="form-control" id="horarios" name="horarios" placeholder="Ex: manhã, tarde, noite">
+    </div>
+
+
+    <div class="mb-3">
+      <label for="cidades" class="form-label">Cidades de atuação (separe por vírgula)</label>
+      <input type="text" class="form-control" id="cidades" name="cidades" placeholder="Ex: São Paulo, Campinas, Santos">
+    </div>
+</div>
+
+
+      <!-- Campos específicos para CLIENTE/FAMÍLIA -->
+      <div id="camposFamilia" class="d-none">
+        <div class="mb-3">
+          <label for="necessidade" class="form-label">Necessidades do idoso</label>
+          <input type="text" class="form-control" id="necessidade" name="necessidade" placeholder="Ex: companhia, cuidados pós-cirúrgicos">
+        </div>
+
+      <div class="mb-3">
+        <label for="turno" class="form-label">Turno preferencial</label>
+        <input type="text" class="form-control" id="turno" name="turno" placeholder="Ex: manhã, tarde, noite">
+      </div>
+
+        <div class="mb-3">
+          <label for="cidade" class="form-label">Endereço</label>
+          <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite seu endereço">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+      <p class="text-center mt-3 mb-0">Já tem conta? <a href="{% url 'login' %}">Faça login</a></p>
+    </form>
+  </section>
+
+  <!-- Rodapé -->
+  <footer class="bg-light text-center py-4 mt-5 border-top">
+    <p class="mb-0 text-muted">© 2025 CareConnect. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Script para alternar campos -->
+  <script>
+    document.getElementById("tipo").addEventListener("change", function() {
+      let cuidador = document.getElementById("camposCuidador");
+      let familia = document.getElementById("camposFamilia");
+
+      if (this.value === "cuidador") {
+        cuidador.classList.remove("d-none");
+        familia.classList.add("d-none");
+      } else if (this.value === "familia") {
+        familia.classList.remove("d-none");
+        cuidador.classList.add("d-none");
+      } else {
+        cuidador.classList.add("d-none");
+        familia.classList.add("d-none");
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre - CareConnect</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Ícones Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="{% static 'css/sobre.css' %}">
+</head>
+<body>
+<!-- inclui o menu -->
+{% include 'menu.html' %}
+
+
+  <!-- Seção Sobre -->
+  <!-- Hero com fundo -->
+<section class={$"hero-sobre d-flex align-items-center text-center text-white"%}>
+  <div class="container">
+    <h1 class="fw-bold">Sobre o CareConnect</h1>
+    <p class="lead">Conectando cuidadores e famílias com carinho, confiança e dedicação.</p>
+  </div>
+</section>
+
+<!-- Conteúdo depois -->
+<section class="container my-5">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <h3 class="fw-bold">Nossa Missão</h3>
+      <p class="text-muted">
+        O CareConnect nasceu para aproximar pessoas que precisam de apoio no cuidado com seus familiares
+        e cuidadores qualificados que desejam oferecer seus serviços. Queremos tornar esse processo simples,
+        seguro e humano, priorizando sempre o bem-estar de quem é cuidado.
+      </p>
+    </div>
+    <div class="col-md-6">
+      <img src="{% static 'imagens/hero1.jpg' %}" alt="Cuidadores" class="img-fluid rounded shadow">
+    </div>
+  </div>
+</section>
+
+  <!-- Valores -->
+  <section class="bg-light py-5">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-4">Nossos Valores</h2>
+      <div class="row g-4 text-center">
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <i class="bi bi-heart-fill text-danger display-5"></i>
+            <h5 class="fw-bold mt-3">Cuidado com Amor</h5>
+            <p class="text-muted">Colocamos o bem-estar no centro de tudo o que fazemos.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <i class="bi bi-shield-check text-primary display-5"></i>
+            <h5 class="fw-bold mt-3">Segurança</h5>
+            <p class="text-muted">Garantimos confiança e tranquilidade para cuidadores e famílias.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm p-4 h-100">
+            <i class="bi bi-people-fill text-success display-5"></i>
+            <h5 class="fw-bold mt-3">Conexão</h5>
+            <p class="text-muted">Aproximamos pessoas de forma prática e acolhedora.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

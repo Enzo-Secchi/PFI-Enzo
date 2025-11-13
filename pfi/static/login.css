@@ -1,0 +1,19 @@
+/* sobre : */
+.hero-sobre {
+  background: url("static/imagens/hero1.jpg") center/cover no-repeat;
+  height: 60vh;
+  position: relative;
+}
+
+
+.hero-sobre::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4); /* leve escurecida */
+}
+
+.hero-sobre .container {
+  position: relative;
+  z-index: 1;
+}

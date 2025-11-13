@@ -1,0 +1,51 @@
+/* Estilo geral */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Carrossel */
+.carousel-item img {
+  height: 80vh;            /* ocupa 80% da altura da tela */
+  object-fit: cover;       /* preenche sem distorcer */
+  filter: brightness(70%); /* deixa mais escuro para destacar texto */
+}
+
+.carousel-caption {
+  bottom: 20%;
+}
+
+.carousel-caption h1,
+.carousel-caption p {
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+}
+
+/* Cartões */
+.card {
+  border-radius: 15px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+/* Botões */
+.btn-primary {
+  background-color: #0077ff;
+  border: none;
+}
+
+.btn-outline-light {
+  border: 2px solid white;
+  color: white;
+}
+
+.btn-outline-light:hover {
+  background-color: white;
+  color: #0077ff;
+}
+
+.navbar-brand img {
+  display: inline-block;
+  vertical-align: middle;
+}

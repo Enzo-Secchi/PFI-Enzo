@@ -1,0 +1,63 @@
+{% extends 'page.html' %}
+{% load static %}
+{% block conteudo %}
+    <!-- Carrossel -->
+  <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <!-- imagem 1 -->
+      <div class="carousel-item active">
+        <img src="{% static 'imagens/hero1.jpg'%}" class="d-block w-100" alt="Cuidadores 1">
+        <div class="carousel-caption d-none d-md-block">
+          <h1 class="fw-bold">Cuidado com Carinho</h1>
+          <p>Encontre cuidadores de confiança para sua família</p>
+          <a href="{% url 'cadastro'%}" class="btn btn-primary btn-lg">Preciso de Cuidador</a>
+        </div>
+      </div>
+      <!-- imagem 2 -->
+      <div class="carousel-item">
+        <img src="../static/imagens/hero2.jpg" class="d-block w-100" alt="Cuidadores 2">
+        <div class="carousel-caption d-none d-md-block">
+          <h1 class="fw-bold">Conectando Pessoas</h1>
+          <p>Junte-se a nós como cuidador e ajude quem precisa</p>
+          <a href="{% url 'cadastro'%}" class="btn btn-outline-light btn-lg">Quero ser Cuidador</a>
+        </div>
+      </div>
+      <!-- imagem 3 -->
+      <div class="carousel-item">
+        <img src="../static/imagens/hero3.jpeg" class="d-block w-100" alt="Cuidadores 3">
+        <div class="carousel-caption d-none d-md-block">
+          <h1 class="fw-bold">Apoio e Confiança</h1>
+          <p>Uma plataforma feita para aproximar cuidadores e famílias</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+  </div>
+
+  <!-- Seções de Destaque -->
+  <section class="container my-5">
+    <div class="row g-4 text-center">
+      <div class="col-md-6">
+        <div class="card shadow-sm p-4 h-100">
+          <i class="bi bi-person-hearts display-4 text-primary"></i>
+          <h4 class="fw-bold mt-3">Para Cuidadores</h4>
+          <p class="text-muted">Cadastre-se para oferecer seus serviços e encontre famílias que precisam de você.</p>
+          <a href="{% url 'cadastro'%}" class="btn btn-primary">Quero ser cuidador</a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm p-4 h-100">
+          <i class="bi bi-people-fill display-4 text-success"></i>
+          <h4 class="fw-bold mt-3">Para Famílias</h4>
+          <p class="text-muted">Encontre cuidadores confiáveis para auxiliar no dia a dia de quem você ama.</p>
+          <a href="{% url 'cadastro'%}" class="btn btn-success">Preciso de cuidador</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock conteudo %}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localização - CareConnect</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <style>
+        .cep-input {
+            max-width: 250px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+{% include 'menu.html' %}
+
+<section class="container mt-4">
+    <h2 class="text-center fw-bold mb-3">Localizar Cuidadores</h2>
+    <p class="text-center text-muted">
+        Encontre cuidadores próximos à sua cidade.
+    </p>
+
+    <!-- Buscar -->
+    <form method="GET" class="text-center mb-4">
+        <input type="text" name="cidade" class="form-control cep-input" placeholder="Digite a cidade"
+               value="{{ request.GET.cidade }}">
+        <button class="btn btn-primary ms-2" type="submit">Buscar</button>
+    </form>
+
+
+    <!-- LISTA DE CUIDADORES -->
+    <section class="container my-4">
+        <div class="row g-4" id="lista-cuidadores">
+
+            <!-- cuidador -->
+            {% for cuidador in cuidadores %}
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <img src="../static/imagens/hero3.jpeg" class="card-img-top" alt="Cuidador 1">
+                    <div class="card-body text-center">
+                        <h5 class="fw-bold">{{cuidador.nome}}</h5>
+                        <p class="text-muted">{{cuidador.especialidade}}</p>
+                        <div class="text-warning mb-2">
+                            {% if cuidador.avaliacao_media %}
+                            {% for i in "12345" %}
+                            {% if forloop.counter <= cuidador.avaliacao_media %}
+                            <i class="bi bi-star-fill"></i>
+                            {% elif cuidador.avaliacao_media|floatformat:1 > forloop.counter0 %}
+                            <i class="bi bi-star-half"></i>
+                            {% else %}
+                            <i class="bi bi-star"></i>
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            <span class="text-muted">Sem avaliações</span>
+                            {% endif %}
+                        </div>
+
+
+                        <a href="{% url 'ver_perfil' cuidador.id %}" class="btn btn-outline-primary btn-sm mt-3">
+                            Ver Perfil
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {%endfor%}
+
+
+        </div>
+    </section>
+</section>
+
+<!--<footer class="bg-light text-center py-4 mt-5 border-top">
+  <p class="mb-0 text-muted">© 2025 CareConnect. Todos os direitos reservados.</p>
+</footer>-->
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--<script>
+  function buscarCuidadores() {
+    let cep = document.getElementById("cep").value;
+
+    fetch(`/buscar_cuidadores/?cep=${cep}`)
+      .then(res => res.json())
+      .then(data => {
+        let lista = document.getElementById("lista-cuidadores");
+        lista.innerHTML = ""; // limpa cards
+
+        if (data.length === 0) {
+          lista.innerHTML = "<p class='text-center text-muted'>Nenhum cuidador encontrado.</p>";
+          return;
+        }
+
+        data.forEach(cuidador => {
+          lista.innerHTML += `
+            <div class="col-md-4">
+              <div class="card shadow-sm h-100">
+                <img src="${cuidador.imagem}" class="card-img-top">
+                <div class="card-body text-center">
+                  <h5 class="fw-bold">${cuidador.nome}</h5>
+                  <p class="text-muted">${cuidador.especialidade}</p>
+                  <a href="#" class="btn btn-outline-primary btn-sm mt-2">Ver Perfil</a>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      });
+  }
+</script>-->
+
+</body>
+</html>

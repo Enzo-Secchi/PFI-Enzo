@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Buscar Cuidadores</h1>
+
+<form method="GET" action="{% url 'buscar_cuidadores' %}">
+    <input type="text" name="cidade" placeholder="Digite a cidade" value="{{ query }}">
+    <button type="submit">Buscar</button>
+</form>
+
+<hr>
+
+{% if cuidadores %}
+    <h2>Resultados:</h2>
+    <ul>
+        {% for cuidador in cuidadores %}
+            <li>
+                <strong>{{ cuidador.nome }}</strong>
+                <br>
+                Especialidade: {{ cuidador.especialidade }} <br>
+
+                <!-- Mostrar todas as cidades -->
+                Cidades:
+                {% if cuidador.cidades.all %}
+                    {{ cuidador.cidades.all|join:", " }}
+                {% else %}
+                    Não informado
+                {% endif %}
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nenhum cuidador encontrado.</p>
+{% endif %}
+
+{% endblock %}
