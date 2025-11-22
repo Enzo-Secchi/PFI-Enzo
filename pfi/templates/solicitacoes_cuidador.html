@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitações de Clientes</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Ícones Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    {% include 'menu.html' %}
+
+    <div class="container mt-4" style="max-width: 900px;">
+
+        <h2 class="mb-4 text-center fw-bold">Solicitações Recebidas</h2>
+
+        <div class="text-center mb-4">
+            <a href="{% url 'solicitacoes_aceitas' %}" class="btn btn-success me-2">
+                <i class="bi bi-check-circle"></i> Aceitas
+            </a>
+            <a href="{% url 'solicitacoes_recusadas' %}" class="btn btn-danger">
+                <i class="bi bi-x-circle"></i> Recusadas
+            </a>
+        </div>
+
+        {% if solicitacoes %}
+            {% for s in solicitacoes %}
+            <div class="card mb-4 shadow-sm border-0" style="position: relative;">
+                <div class="card-body">
+
+                    <!-- lixeira que so vai funcionar caso os status != pendente  -->
+                    <button class="btn btn-outline-danger btn-sm btn-lixeira" style="position: absolute; top: 10px; right: 10px;"
+                        {% if s.status == 'pendente' %} disabled {% endif %}>
+                        <i class="bi bi-trash"></i>
+                    </button>
+
+                    <h5 class="card-title">
+                        <i class="bi bi-person-circle me-1"></i>
+                        {{ s.cliente.nome }}
+                    </h5>
+
+                    <p class="mb-1"><strong>Data da solicitação:</strong> {{ s.data_solicitacao }}</p>
+                    <p class="mb-1"><strong>Turno desejado:</strong> {{ s.turno }}</p>
+                    <p class="mb-1"><strong>Horário:</strong> {{ s.horario_inicial }} — {{ s.horario_final }}</p>
+                    <p class="mb-1"><strong>Descrição:</strong> {{ s.descricao }}</p>
+
+                    {% if s.observacao %}
+                    <p class="mb-1"><strong>Observações:</strong> {{ s.observacao }}</p>
+                    {% endif %}
+
+                    <!-- Status -->
+                    <p class="mb-2">
+                        <strong>Status:</strong>
+                        {% if s.status == 'pendente' %}
+                        <span class="badge bg-warning">Pendente</span>
+                        {% elif s.status == 'aceita' %}
+                        <span class="badge bg-success">Aceita</span>
+                        {% elif s.status == 'recusada' %}
+                        <span class="badge bg-danger">Recusada</span>
+                        {% elif s.status == 'cancelada' %}
+                        <span class="badge bg-dark">Cancelada</span>
+                        {% elif s.status == 'concluida' %}
+                        <span class="badge bg-primary">Concluída</span>
+                        {% endif %}
+                    </p>
+
+
+                    <hr>
+
+                    <!-- Aceitar/Recusar apenas se pendente -->
+                    {% if s.status == 'pendente' %}
+                    <form method="post" class="d-flex gap-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="solicitacao_id" value="{{ s.id }}">
+                        <a href="{% url 'aceitar_solicitacao' s.id %}" class="btn btn-success btn-sm px-3">
+                            <i class="bi bi-check-circle"></i> Aceitar
+                        </a>
+                        <a href="{% url 'recusar_solicitacao' s.id %}" class="btn btn-danger btn-sm px-3 ms-2">
+                            <i class="bi bi-x-circle"></i> Recusar
+                        </a>
+                    </form>
+                    {% endif %}
+
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center text-muted">
+                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                Nenhuma solicitação no momento.
+            </p>
+        {% endif %}
+
+    </div>
+<!-- para apagar o card dessa tela quando clicado na lixeira -->
+    <script>
+        document.querySelectorAll('.btn-lixeira').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.card');
+                if (!this.disabled) {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

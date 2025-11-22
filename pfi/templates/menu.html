@@ -3,7 +3,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="../static/imagens/logo.jpeg" alt="CareConnect" height="100" class="me-2">
+            <img src="{% static 'imagens/logo.jpeg' %}" alt="CareConnect" height="100" class="me-2">
             <span class="fw-bold text-primary">CareConnect</span>
         </a>
 
@@ -26,23 +26,43 @@
                     <a class="nav-link" href="{% url 'sobre' %}">Sobre</a>
                 </li>
 
-                <!--  EDITAR PERFIL -->
+                <!-- EDITAR PERFIL -->
                 <li class="nav-item d-flex align-items-center">
+                    {% if request.session.is_cuidador %}
                     <a class="nav-link d-flex align-items-center gap-1 py-2"
-                    href="{% url 'editar_perfil' %}">
-                    <i class="bi bi-person-fill" style="font-size: 1.2rem; color:#007bff;"></i>
-                    <span>Editar Perfil</span>
-                    </a>
+                       href="{% url 'editar_perfil_cuidador' %}">
+                        {% else %}
+                        <a class="nav-link d-flex align-items-center gap-1 py-2"
+                           href="{% url 'editar_perfil_cliente' %}">
+                            {% endif %}
+                            <i class="bi bi-person-fill" style="font-size: 1.2rem; color:#007bff;"></i>
+                            <span>Editar Perfil</span>
+                        </a>
                 </li>
 
+                {% if request.session.is_cuidador %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'solicitacoes_cuidador' %}">Solicitações</a>
+                </li>
+                {% endif %}
 
-                <!-- Botão Login -->
+                {% if request.session.user_logado and not request.session.is_cuidador %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'minhas_solicitacoes_cliente' %}">Minhas Solicitações</a>
+                </li>
+                {% endif %}
+
+                {% if request.session.user_logado %}
+                <li class="nav-item">
+                    <a class="btn btn-outline-danger ms-3" href="{% url 'logout' %}">Sair da conta</a>
+                </li>
+                {% else %}
                 <li class="nav-item">
                     <a class="btn btn-primary ms-3" href="{% url 'login' %}">Login</a>
                 </li>
+                {% endif %}
 
             </ul>
         </div>
     </div>
 </nav>
-

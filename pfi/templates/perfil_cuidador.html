@@ -148,21 +148,35 @@
 
 <!-- Conteúdo branco abaixo -->
 <section class="profile-content">
-    <img src="{% static 'imagens/default_cuidador.jpg' %}" alt="{{ cuidador.nome }}">
+    <div class="d-flex justify-content-center position-relative" style="margin-top: -355px;">
+    {% if cuidador.foto %}
+    <img src="{{ cuidador.foto.url }}" alt="{{ cuidador.nome }}" class="rounded-circle border border-white shadow"
+         style="width:250px; height:250px; object-fit:cover;">
+    {% else %}
+    <img src="{% static 'imagens/default_cuidador.jpg' %}" alt="{{ cuidador.nome }}" class="rounded-circle border border-white shadow"
+         style="width:250px; height:250px; object-fit:cover;">
+    {% endif %}
+</div>
+
+
+
+
     <h1>{{ cuidador.nome }}</h1>
     <p>{{ cuidador.especialidade|default:"Especialidade não informada" }}</p>
 
     {% if nota_media %}
-    <div class="star-rating">
+    <div class="text-warning mb-3">
         {% for i in "12345" %}
         {% if forloop.counter <= nota_media %}
         <i class="bi bi-star-fill"></i>
+        {% elif nota_media|floatformat:1 >= forloop.counter|add:"-0.5" %}
+        <i class="bi bi-star-half"></i>
         {% else %}
         <i class="bi bi-star"></i>
         {% endif %}
         {% endfor %}
     </div>
-    <small>{{ nota_media }}/5</small>
+    <small>{{ nota_media|floatformat:1 }}/5</small>
     {% else %}
     <small>Sem avaliações</small>
     {% endif %}
@@ -187,8 +201,19 @@
         </div>
 
         <div class="info-card">
+            <h5>WhatsApp</h5>
+            <p class="d-flex justify-content-center align-items-center gap-2">
+                <i class="bi bi-whatsapp text-success" style="font-size: 1.4rem;"></i>
+                {{ cuidador.telefone|default:"Não informado" }}
+            </p>
+        </div>
+
+
+        <div class="info-card">
             <h5>Ação</h5>
-            <button class="btn-request" disabled>Solicitar Cuidador</button>
+            <a href="{% url 'cadastrar_solicitacao' cuidador.id %}" class="btn-request">
+                Solicitar Cuidador
+            </a>
         </div>
     </section>
 

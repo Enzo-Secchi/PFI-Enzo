@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Solicitações</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Ícones Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+{% include 'menu.html' %}
+
+<div class="container mt-4" style="max-width: 900px;">
+    <h2 class="mb-4 text-center fw-bold">Minhas Solicitações</h2>
+
+    {% if solicitacoes %}
+    {% for s in solicitacoes %}
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+
+            <h5 class="card-title d-flex align-items-center gap-2">
+                <i class="bi bi-person-circle"></i>
+                {{ s.cuidador.nome }}
+            </h5>
+
+            <!-- Data da solicitação -->
+            <p class="mb-1"><strong>Data da solicitação:</strong> {{ s.data_solicitacao|date:"d/m/Y" }}</p>
+
+            <!-- Horário do atendimento -->
+            <p class="mb-1">
+                <strong>Horário do atendimento:</strong>
+                {{ s.horario_inicial|time:"H:i" }} — {{ s.horario_final|time:"H:i" }}
+            </p>
+
+            <!-- Status da solicitação -->
+            <p class="mb-1">
+                <strong>Status:</strong>
+                {% if s.status == "pendente" %}
+                <span class="badge bg-secondary">Pendente</span>
+                {% elif s.status == "aceita" %}
+                <span class="badge bg-success">Aceita</span>
+                {% elif s.status == "recusada" %}
+                <span class="badge bg-danger">Recusada</span>
+                {% elif s.status == "cancelada" %}
+                <span class="badge bg-dark">Cancelada</span>
+                {% elif s.status == "concluida" %}
+                <span class="badge bg-primary">Concluída</span>
+                {% endif %}
+
+            </p>
+
+
+
+            <!-- Descrição -->
+            <p class="mb-1"><strong>Descrição:</strong> {{ s.descricao }}</p>
+
+            <!-- Observações -->
+            {% if s.observacao %}
+            <p class="mb-1"><strong>Observações:</strong> {{ s.observacao }}</p>
+            {% endif %}
+
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                {% if s.status != "cancelada" and s.status != "recusada" and s.status != "concluida" %}
+                <a href="{% url 'cancelar_solicitacao_cliente' s.id %}" class="btn btn-danger">
+                    Cancelar solicitação
+                </a>
+                {% endif %}
+
+                {% if s.status == "cancelada" or s.status == "recusada" or s.status == "concluida" %}
+                <a href="{% url 'excluir_solicitacao' s.id %}" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i> Excluir
+                </a>
+                {% endif %}
+
+                {% if s.status == "concluida" and not s.avaliacao_cliente_set.exists %}
+                <a href="{% url 'avaliar_cuidador' s.id %}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-star"></i> Avaliar
+                </a>
+                {% endif %}
+            </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center text-muted">
+        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+        Nenhuma solicitação no momento.
+    </p>
+    {% endif %}
+</div>
+
+</body>
+</html>

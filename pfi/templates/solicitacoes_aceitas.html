@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitações Aceitas</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+{% include 'menu.html' %}
+
+<div class="container mt-4" style="max-width: 900px;">
+    <h2 class="mb-4 text-center fw-bold">Solicitações Aceitas</h2>
+
+    {% if solicitacoes %}
+        {% for s in solicitacoes %}
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body">
+
+                <h5 class="card-title">{{ s.cliente.nome }}</h5>
+
+                <p class="mb-1"><strong>Data:</strong> {{ s.data_solicitacao|date:"d/m/Y" }}</p>
+
+                <p class="mb-1">
+                    <strong>Horário:</strong>
+                    {{ s.horario_inicial|time:"H:i" }} — {{ s.horario_final|time:"H:i" }}
+                </p>
+
+                <!-- STATUS -->
+                {% if s.status == "aceita" %}
+                    <span class="badge bg-success">Aceita</span>
+                {% elif s.status == "concluida" %}
+                    <span class="badge bg-primary">Concluída</span>
+                {% endif %}
+
+                <p class="mt-2"><strong>Descrição:</strong> {{ s.descricao }}</p>
+
+                {% if s.observacao %}
+                    <p><strong>Observações:</strong> {{ s.observacao }}</p>
+                {% endif %}
+
+                <hr>
+
+                <!-- BOTÕES -->
+                <div class="d-flex gap-2">
+
+                    {% if s.status == "aceita" %}
+                        <!-- CANCELAR -->
+                        <a href="{% url 'cancelar_solicitacao' s.id %}" class="btn btn-danger btn-sm">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+
+                        <!-- CONCLUIR -->
+                        <a href="{% url 'concluir_solicitacao' s.id %}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-check-circle"></i> Concluído
+                        </a>
+                    {% endif %}
+
+                    <!-- LIXEIRA (só depois de concluída ou cancelada) -->
+                    {% if s.status != "aceita" %}
+                        <a href="{% url 'excluir_solicitacao' s.id %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-trash"></i> Excluir
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-center text-muted">Nenhuma solicitação aceita.</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
