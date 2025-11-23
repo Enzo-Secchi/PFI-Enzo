@@ -608,11 +608,21 @@ def concluir_solicitacao(request, id):
 def excluir_solicitacao(request, id):
     try:
         solicitacao = Solicitacao.objects.get(id=id)
-        solicitacao.delete()
-    except Solicitacao.DoesNotExist:
-        pass  # se não existir, não faz nada
+        # Só permite apagar se não for pendente
+        if solicitacao.status != "pendente":
+            # Apaga registros dependentes
+            Avaliacao_Cliente.objects.filter(solicitacao=solicitacao).delete()
+            Avaliacao_Cuidador.objects.filter(solicitacao=solicitacao).delete()
+            Mensagem.objects.filter(solicitacao=solicitacao).delete()
 
-    return redirect('minhas_solicitacoes')
+            # Agora apaga a própria solicitação
+            solicitacao.delete()
+    except Solicitacao.DoesNotExist:
+        pass  # se não existir, ignora
+
+    # Mantém o usuário na tela correta
+    return redirect(request.META.get('HTTP_REFERER', 'minhas_solicitacoes'))
+
 
 
 
