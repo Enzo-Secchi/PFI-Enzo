@@ -103,20 +103,35 @@ def login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         senha = request.POST.get('senha')
+        tipo = request.POST.get('tipo_usuario')  # <-- só isso
 
         user = Usuario.objects.filter(email=email, senha=senha).first()
 
         if user:
+            # verifica se é cuidador no banco
+            is_cuidador = Cuidador.objects.filter(pk=user.pk).exists()
+
+            # --- valida o tipo escolhido ---
+            if tipo == "cuidador" and not is_cuidador:
+                return render(request, 'login.html', {"msg_erro": "Este e-mail não é de cuidador."})
+
+            if tipo == "cliente" and is_cuidador:
+                return render(request, 'login.html', {"msg_erro": "Este e-mail não é de cliente."})
+            # ---------------------------------
+
+            # login normal (NÃO ALTEREI)
             request.session["user_id"] = user.id
-            request.session["is_cuidador"] = Cuidador.objects.filter(pk=user.pk).exists()
+            request.session["is_cuidador"] = is_cuidador
+
             usuario_serializado = serializers.serialize('json', [user])
             request.session["user_logado"] = usuario_serializado
+
             return redirect('home')
+
         else:
             msg_erro = "Email ou senha incorretos."
 
     return render(request, 'login.html', {'msg_erro': msg_erro})
-
 
 def logout_view(request):
     request.session.flush()
@@ -164,6 +179,7 @@ def cadastro(request):
         nome = request.POST.get("nome")
         email = request.POST.get("email")
         telefone = request.POST.get("telefone")
+        cpf = request.POST.get("cpf")
         senha = request.POST.get("senha")
         data_nasc = request.POST.get("data_nasc")
         tipo = request.POST.get("tipo")
@@ -182,6 +198,7 @@ def cadastro(request):
                 nome=nome,
                 email=email,
                 telefone=telefone,
+                cpf=cpf,
                 senha=senha,
                 data_nasc=data_nasc,
                 especialidade=especialidade,
@@ -212,6 +229,7 @@ def cadastro(request):
                 nome=nome,
                 email=email,
                 telefone=telefone,
+                cpf=cpf,
                 senha=senha,
                 data_nasc=data_nasc,
                 necessidade=necessidades_formatado,  # <-- model usa singular

@@ -40,19 +40,26 @@
         <!-- Botões de seleção -->
         <p class="text-center mb-2">Entrar como:</p>
 
-        <div class="mb-2">
-          <input type="radio" class="btn-check" name="tipo" id="cliente" value="cliente" required>
-          <label class="btn btn-outline-success w-100" for="cliente">Sou Cliente</label>
-        </div>
+          <div class="mb-2">
+              <input type="radio" class="btn-check" name="tipo_usuario" id="cliente" value="cliente" required>
+              <label class="btn btn-outline-success w-100" for="cliente">Sou Cliente</label>
+          </div>
 
-        <div class="mb-3">
-          <input type="radio" class="btn-check" name="tipo" id="cuidador" value="cuidador" required>
-          <label class="btn btn-outline-primary w-100" for="cuidador">Sou Cuidador</label>
-        </div>
+          <div class="mb-3">
+              <input type="radio" class="btn-check" name="tipo_usuario" id="cuidador" value="cuidador" required>
+              <label class="btn btn-outline-primary w-100" for="cuidador">Sou Cuidador</label>
+          </div>
 
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-primary">Entrar</button>
         </div>
+
+          <div class="text-center mt-3">
+              <p class="mb-0">Não tem uma conta?</p>
+              <a href="{% url 'cadastro' %}" class="text-primary fw-bold">
+                  Fazer cadastro
+              </a>
+          </div>
       </form>
     </div>
   </div>
