@@ -36,7 +36,6 @@ urlpatterns = [
     path('cadastro/', cadastro, name='cadastro'),
     path("localizacao/", LocalizacaoView.as_view(), name="localizacao"),
     path("cuidador/<int:id>/", CuidadorDetailView.as_view(), name="ver_perfil"),
-    # path("editar-perfil/", EditarPerfilView.as_view(), name="editar_perfil"),
     path("editar-perfil/cuidador/", EditarPerfilCuidadorView, name="editar_perfil_cuidador"),
     path("editar-perfil/cliente/", EditarPerfilClienteView.as_view(), name="editar_perfil_cliente"),
     path("cuidador/solicitacoes/", SolicitacoesCuidadorView.as_view(), name="solicitacoes_cuidador"),

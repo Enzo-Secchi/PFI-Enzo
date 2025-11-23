@@ -1,23 +1,20 @@
-from idlelib.pyshell import use_subprocess
 
-from django.contrib.auth.models import User
-from django.urls import reverse_lazy
+
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, ListView
 from pfi.models import *
 from pfi.forms import *
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.urls import reverse_lazy
-from django.contrib.auth import authenticate, login as auth_login
-from django.db.models import Avg
 from django.core import serializers
 from django.contrib import messages
-from django.views import View
-from django.shortcuts import redirect
-from .models import Cuidador, Cliente
+from django.shortcuts import redirect, get_object_or_404
+from .models import Solicitacao
+from django.views.generic import DetailView
+from django.db.models import Avg
+from .models import Cuidador, Avaliacao_Cliente
 
 
 # Create your views here.
@@ -26,23 +23,6 @@ cuidador_logado: Cuidador = None
 
 class IndexTemplateView(TemplateView):
     template_name = 'index.html'
-
-
-# class CuidadoresTemplateView(ListView):
-#     template_name = 'cuidadores.html'
-#     model = Cuidador
-#     context_object_name = 'cuidadores'
-#
-#     # extra_context_name = 'cuidadores' caso precise  add informações extras
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#
-#         cuidadores = Cuidador.objects.order_by("-avaliacao_cliente")[:4]
-#
-#         context["cuidadores"] = cuidadores
-#         return context
-
 
 
 class CuidadoresTemplateView(ListView):
@@ -62,41 +42,11 @@ class CuidadoresTemplateView(ListView):
 
 
 
-
-
 class SobreTemplateView(TemplateView):
     template_name = 'sobre.html'
 
 
-# def login(request):
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         senha = request.POST.get('senha')
-#         user = Usuario()
-#         # Autenticar usuário
-#         # Procurar usuário pelo email
-#         try:
-#             user = Usuario.objects.get(email=email, senha=senha)
-#             usuario_serializado = serializers.serialize('json', [user])
-#             print(user)
-#             request.session['user_logado'] = usuario_serializado
-#             cuidador = Cuidador.objects.filter(pk=user.pk).first()
-#             print('cuidador',cuidador)
-#             cuidador_logado = cuidador
-#             if cuidador != None:
-#                 request.session['is_cuidador'] = True
-#             else:
-#                 request.session['is_cuidador'] = False
-#
-#             return  redirect('home')
-#
-#         except User.DoesNotExist:
-#             context = {'msg_erro': 'Usuário não encontrado'}
-#             return render(request, 'login.html', context=context)
-#
-#         return redirect('home')
-#     else:
-#         return render(request, 'login.html')
+
 
 def login(request):
     msg_erro = None
@@ -117,9 +67,9 @@ def login(request):
 
             if tipo == "cliente" and is_cuidador:
                 return render(request, 'login.html', {"msg_erro": "Este e-mail não é de cliente."})
-            # ---------------------------------
 
-            # login normal (NÃO ALTEREI)
+
+            # login normal
             request.session["user_id"] = user.id
             request.session["is_cuidador"] = is_cuidador
 
@@ -138,39 +88,6 @@ def logout_view(request):
     return redirect('login')
 
 
-# def cadastro(request):
-#     if request.method == "POST":
-#         nome = request.POST.get("nome")
-#         email = request.POST.get("email")
-#         telefone = request.POST.get("telefone")
-#         senha = request.POST.get("senha")
-#         tipo = request.POST.get("tipo")
-#
-#         print(tipo)
-#
-#
-#         # Campos específicos
-#         especialidade = request.POST.get("especialidade")
-#         horarios = request.POST.get("horarios")
-#         area = request.POST.get("area")
-#         necessidades = request.POST.get("necessidades")
-#         cidade = request.POST.get("cidade")
-#
-#         if tipo == 'Cuidador':
-#             cuidador = Cuidador()
-#             cuidador.nome = nome
-#             cuidador.email = email
-#             cuidador.telefone = telefone
-#             cuidador.senha = senha
-#             cuidador.especialidade = especialidade
-#             cuidador.horarios = horarios
-#             cuidador.area = area
-#             cuidador.cidade = cidade
-#             cuidador.save()
-#
-#         return redirect('login')
-#
-#     return render(request, 'cadastro.html')
 from .models import Cuidador, Cliente, Cidade
 
 
@@ -269,8 +186,6 @@ class UsuarioListView(ListView):
     context_object_name = 'usuarios'
 
 
-
-
 class LocalizacaoView(ListView):
     template_name = "localizacao.html"
     model = Cuidador
@@ -292,17 +207,11 @@ class LocalizacaoView(ListView):
 
 
 
-
-
-from django.views.generic import DetailView
-from django.db.models import Avg
-from .models import Cuidador, Avaliacao_Cliente
-
 class CuidadorDetailView(DetailView):
     model = Cuidador
     template_name = "perfil_cuidador.html"
     context_object_name = "cuidador"
-    pk_url_kwarg = "id"  # ou "cuidador_id", dependendo da URL
+    pk_url_kwarg = "id"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -315,55 +224,6 @@ class CuidadorDetailView(DetailView):
 
         context['nota_media'] = media if media else 0
         return context
-
-
-# class EditarPerfilCuidadorView(UpdateView):
-#     model = Cuidador
-#     template_name = "editar_perfil.html"
-#     fields = ["nome", "email", "telefone", "foto", "especialidade", "disponibilidade"]  # campos do form
-#     success_url = reverse_lazy("editar_perfil_cuidador")
-#
-#     def get_object(self, queryset=None):
-#         user_id = self.request.session.get("user_id")
-#         if not user_id:
-#             messages.error(self.request, "Você precisa estar logado para editar o perfil.")
-#             return redirect("login")
-#         return Cuidador.objects.get(pk=user_id)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["cuidador"] = self.get_object()  # passa pro template
-#         return context
-
-# def form_valid(self, form):
-#     cuidador = form.save(commit=False)
-#
-#     # Salvar foto se houver
-#     if self.request.FILES.get("foto"):
-#         cuidador.foto = self.request.FILES["foto"]
-#
-#     cuidador.save()
-#
-#     # Atualizar cidades de atuação (many-to-many)
-#     cidades_texto = self.request.POST.get("cidades", "")
-#     cuidador.cidades.clear()
-#     cidades_list = [c.strip() for c in cidades_texto.split(",") if c.strip()]
-#     for c_nome in cidades_list:
-#         cidade_obj, created = Cidade.objects.get_or_create(nome__iexact=c_nome, defaults={"nome": c_nome})
-#         if not created:
-#             cidade_obj = Cidade.objects.filter(nome__iexact=c_nome).first()
-#             if not cidade_obj:
-#                 cidade_obj = Cidade.objects.create(nome=c_nome)
-#         cuidador.cidades.add(cidade_obj)
-#
-#     # Atualiza sessão
-#     usuario_serializado = serializers.serialize('json', [cuidador])
-#     self.request.session['user_logado'] = usuario_serializado
-#     self.request.session['user_id'] = cuidador.id
-#
-#     messages.success(self.request, "Perfil atualizado com sucesso!")
-#     return super().form_valid(form)
-
 
 class EditarPerfilClienteView(UpdateView):
     model = Cliente
@@ -396,97 +256,11 @@ class EditarPerfilClienteView(UpdateView):
         return super().form_valid(form)
 
 
-# def EditarPerfil(request):
-#     if request.method == "POST":
-#         pass
-#     else:
-#         return render(request, 'editar_perfil.html')
-
-
-# class EditarPerfilView(UpdateView):
-#     model = Cuidador  # depois trocar para usuário logado
-#     template_name = "editar_perfil.html"
-#     fields = ["nome", "telefone", "email", "foto"]
-#     success_url = reverse_lazy("editar_perfil")
-#
-#     def get_object(self, queryset=None):
-#         # pegar usuário da sessão
-#         usuario_json = self.request.session.get('user_logado')
-#
-#         if not usuario_json:
-#             return redirect('login')
-#
-#         usuario = list(serializers.deserialize('json', usuario_json))[0].object
-#
-#         # retorna o cuidador logado
-#         return Cuidador.objects.get(pk=usuario.pk)
-#
-#     def form_valid(self, form):
-#         cuidador = form.save(commit=False)
-#
-#         if "foto" in self.request.FILES:
-#             cuidador.foto = self.request.FILES["foto"]
-#
-#         cuidador.save()
-#
-#         # atualizar sessão com os novos dados
-#         usuario_serializado = serializers.serialize('json', [cuidador])
-#         self.request.session['user_logado'] = usuario_serializado
-#
-#         messages.success(self.request, "Perfil atualizado com sucesso!")
-#
-#         return super().form_valid(form)
-#
-#     def form_invalid(self, form):
-#         messages.error(self.request, "Erro ao atualizar o perfil. Verifique os dados.")
-#         return super().form_invalid(form)
-#
-# -----------------------------------------------------------
-
-
-# def get_object(self, queryset=None):
-#     # pegar o cuidador logado futuramente
-#     return Cuidador.objects.first()
-#
-# def form_valid(self, form):
-#     cuidador = form.save(commit=False)
-#
-#     # SALVAR FOTO
-#     if "foto" in self.request.FILES:
-#         cuidador.foto = self.request.FILES["foto"]
-#
-#     cuidador.save()
-#     return super().form_valid(form)
-
-
 class SolicitacoesCuidadorView(ListView):
     model = Solicitacao
     template_name = "solicitacoes_cuidador.html"
     context_object_name = "solicitacoes"
 
-
-# def CriarSolicitacoes(request, pk):
-#     cuidador = Cuidador.objects.get(pk=pk)
-#     if request.method == "POST":
-#
-#         print(request.session['user_logado'])
-#         id_user = request.session['user_logado']
-#         cliente = Cliente.objects.get(pk=10)
-#         data_solicitacao = request.POST.get("data_solicitacao")
-#         turno = request.POST.get("turno")
-#         horario_inicial = request.POST.get('horario_inicial')
-#         horario_final = request.POST.get('horario_final')
-#         descricao = request.POST.get('descricao')
-#         observacao = request.POST.get('observacao')
-#
-#         solicitacao = Solicitacao(cuidador=cuidador, cliente=cliente, data_solicitacao=data_solicitacao, turno=turno,
-#                                   horario_inicial=horario_inicial, horario_final=horario_final, descricao=descricao,
-#                                   observacao=observacao)
-#         solicitacao.save()
-#         return redirect('home')
-#     else:
-#         dados = {'cuidador': cuidador}
-#         return render(request, 'solicitar_cuidador.html', context=dados)
 
 def CriarSolicitacoes(request, pk):
     cuidador = Cuidador.objects.get(pk=pk)
@@ -624,11 +398,6 @@ def excluir_solicitacao(request, id):
     return redirect(request.META.get('HTTP_REFERER', 'minhas_solicitacoes'))
 
 
-
-
-
-from django.shortcuts import redirect, get_object_or_404
-from .models import Solicitacao
 
 
 def aceitar_solicitacao(request, id):

@@ -2,13 +2,6 @@ from django.contrib import admin
 
 from pfi.models import *
 
-# Register your models here.
-# @admin.register(Endereco)
-# class EnderecoAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'bairro', 'rua', 'cidade', 'numero', 'cep')
-#     ordering = ('-id',)
-#     search_fields = ('bairro', 'rua', 'cidade', 'cep')
-
 
 @admin.register(Usuario)
 class UsuarioAdmin(admin.ModelAdmin):

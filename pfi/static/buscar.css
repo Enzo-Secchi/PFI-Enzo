@@ -5,7 +5,7 @@
   border-radius: 6px;
 }
 
-/* duas colunas no desktop */
+/* duas colunas */
 @media (min-width: 768px) {
   .cuidador-col {
     width: 50%;

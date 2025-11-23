@@ -1,18 +1,6 @@
 from django.db import models
 
 
-# class Endereco(models.Model):
-#     bairro=models.CharField(max_length=100)
-#     rua=models.CharField(max_length=100)
-#     cidade=models.CharField(max_length=100)
-#     numero=models.CharField(max_length=100)
-#     cep=models.CharField(max_length=100)
-#
-#     def __str__(self):
-#         return self.cidade
-
-
-
 # Usuário base (pode ser cuidador ou família)
 class Usuario(models.Model):
     nome = models.CharField(max_length=100)
