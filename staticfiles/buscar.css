@@ -1,0 +1,26 @@
+.cuidador-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+/* duas colunas */
+@media (min-width: 768px) {
+  .cuidador-col {
+    width: 50%;
+    float: left;
+  }
+}
+
+/* botão centralizado */
+#showMoreBtn {
+  margin-top: 10px;
+}
+
+/* limpa floats */
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}

@@ -68,6 +68,9 @@ def login(request):
             if tipo == "cliente" and is_cuidador:
                 return render(request, 'login.html', {"msg_erro": "Este e-mail não é de cliente."})
 
+            if tipo == "cuidador":
+                cuidador = Cuidador.objects.get(pk=user.pk)
+                request.session["cuidador_id"] = cuidador.id
 
             # login normal
             request.session["user_id"] = user.id
@@ -321,6 +324,7 @@ def solicitacoes_pendentes(request):
     cuidador = Cuidador.objects.get(usuario_ptr_id=request.session["user_id"])
     solicitacoes = Solicitacao.objects.filter(cuidador=cuidador, status="pendente")
     return render(request, "solicitacoes_pendentes.html", {"solicitacoes": solicitacoes})
+
 
 
 # LISTAR ACEITAS
